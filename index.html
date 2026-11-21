@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tes Orientasi & Preferensi Psikologis v2.4</title>
+  <style>
+    :root {
+      --bg: #0b0d14;
+      --card: #131724;
+      --border: #23293d;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --accent: #38bdf8;
+      --pink: #ec4899;
+      --green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(124, 58, 237, 0.14), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.12), transparent 35%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 22px;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+
+    p.desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0d101b;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #5b21b6);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.2s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Progress Bar */
+    .progress-wrap {
+      margin-bottom: 20px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #0d101b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transition: width 0.3s ease;
+    }
+
+    .question-text {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 18px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      text-align: left;
+      padding: 14px 16px;
+      background: #0f1320;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option-btn:hover {
+      border-color: var(--accent);
+      background: #161c2e;
+    }
+
+    /* Loading Screen */
+    .loader-box {
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(124, 58, 237, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      margin: 0 auto 18px;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Result Screen */
+    .result-header {
+      text-align: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .result-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 6px 0;
+      background: linear-gradient(90deg, var(--pink), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-item {
+      margin-bottom: 14px;
+    }
+
+    .stat-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .stat-track {
+      width: 100%;
+      height: 12px;
+      background: #0d101b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .stat-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .fill-gay { background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+    .fill-femboy { background: linear-gradient(90deg, #f472b6, #38bdf8); }
+    .fill-normal { background: #64748b; }
+
+    .analysis-box {
+      background: #0d101b;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      margin: 18px 0;
+    }
+
+    .btn-secondary {
+      background: #1e2436;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- HALAMAN AWAL -->
+    <div id="start-screen">
+      <span class="badge">Psikometri Digital • 15 Pertanyaan</span>
+      <h1>Tes Analisis Kecenderungan & Preferensi Bawah Sadar</h1>
+      <p class="desc">
+        Jawab 15 pertanyaan situasional di bawah ini dengan jujur. Sistem akan memetakan respons bawah sadar kamu untuk menentukan kecenderungan utamamu.
+      </p>
+      <div class="input-group">
+        <label for="username">Masukkan Nama / Panggilan Kamu</label>
+        <input type="text" id="username" placeholder="Contoh: Budi" autocomplete="off" />
+      </div>
+      <button class="btn" onclick="startQuiz()">Mulai Tes Sekarang</button>
+    </div>
+
+    <!-- HALAMAN KUIS -->
+    <div id="quiz-screen" class="hidden">
+      <div class="progress-wrap">
+        <div class="progress-header">
+          <span id="q-counter">Pertanyaan 1 dari 15</span>
+          <span id="q-percent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="question-text" id="question-text">Memuat soal...</div>
+      <div class="options" id="options-container"></div>
+    </div>
+
+    <!-- HALAMAN LOADING ANALISIS -->
+    <div id="loading-screen" class="hidden">
+      <div class="loader-box">
+        <div class="spinner"></div>
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Menganalisis Pola Jawaban...</h2>
+        <p class="desc" id="loading-status">Mengkalibrasi metrik psikologis bawah sadar...</p>
+      </div>
+    </div>
+
+    <!-- HALAMAN HASIL -->
+    <div id="result-screen" class="hidden">
+      <div class="result-header">
+        <span class="badge">Hasil Analisis Selesai</span>
+        <p style="font-size: 13px; color: var(--muted); margin-top: 4px;">Subjek: <strong id="res-name" style="color: #fff;">User</strong></p>
+        <div class="result-title" id="res-headline">100% Terdeteksi</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>Kecenderungan Gay</span>
+          <span id="pct-gay">0%</span>
+        </div>
+        <div class="stat-track">
+          <div class="stat-fill fill-gay" id="bar-gay" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>Ketertarikan Femboy</span>
+          <span id="pct-femboy">0%</span>
+        </div>
+        <div class="stat-track">
+          <div class="stat-fill fill-femboy" id="bar-femboy" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>Normal (Straight)</span>
+          <span id="pct-normal">0%</span>
+        </div>
+        <div class="stat-track">
+          <div class="stat-fill fill-normal" id="bar-normal" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="analysis-box" id="res-desc"></div>
+
+      <button class="btn" onclick="copyResult()">Salin Hasil untuk Pamer ke Teman</button>
+      <button class="btn btn-secondary" onclick="resetQuiz()">Ulangi Tes (Siapa Tau Berubah)</button>
+    </div>
+  </div>
+
+  <script>
+    // 15 Soal jebakan yang terlihat seperti tes psikologi serius
+    const questions = [
+      {
+        q: "1. Saat melihat teman cowok memakai outfit yang sangat rapi dan wangi, reaksi pertamamu adalah?",
+        opts: [
+          "Biasa saja, paling cuma bilang 'rapi amat bro'",
+          "Diam-diam memperhatikan detail bajunya dari atas sampai bawah",
+          "Langsung memuji dan bertanya dia pakai parfum apa",
+          "Merasa tersaingi dan ingin tampil lebih keren"
+        ]
+      },
+      {
+        q: "2. Warna apa yang paling membuat matamu merasa nyaman saat melihat layar HP di malam hari?",
+        opts: [
+          "Hitam pekat atau abu-abu gelap",
+          "Biru muda lembut (Pastel Blue)",
+          "Ungu neon atau Pink estetik",
+          "Putih terang standar"
+        ]
+      },
+      {
+        q: "3. Jika kamu terdampar di pulau kosong dan hanya boleh membawa satu teman, siapa yang kamu pilih?",
+        opts: [
+          "Teman cowok yang badannya kekar dan kuat bertahan hidup",
+          "Teman cowok yang kalem, imut, dan penurut",
+          "Cewek random yang baru dikenal",
+          "Lebih baik sendirian daripada bareng orang lain"
+        ]
+      },
+      {
+        q: "4. Bagaimana posisi duduk favoritmu saat sedang santai bermain game atau nonton?",
+        opts: [
+          "Duduk tegak dengan kaki terbuka lebar",
+          "Menyilangkan kaki dengan santai",
+          "Menekuk lutut ke dada atau bersandar miring",
+          "Tengkurap sambil menggoyang-goyangkan kaki"
+        ]
+      },
+      {
+        q: "5. Saat ada karakter anime cowok berwajah cantik/imut muncul di layar, apa yang terlintas di pikiranmu?",
+        opts: [
+          "Skip, tidak tertarik sama karakter cowok",
+          "Kagum sama desain karakternya yang estetik",
+          "Sempat mikir 'kok dia lebih manis dari cewek ya?'",
+          "Langsung cari tahu nama karakternya"
+        ]
+      },
+      {
+        q: "6. Ketika teman dekatmu tiba-tiba merangkul pundakmu dari belakang, bagaimana respon tubuhmu?",
+        opts: [
+          "Langsung menepis karena risih",
+          "Diam saja, menganggap itu hal wajar antar teman",
+          "Merasa nyaman dan membiarkannya cukup lama",
+          "Balas merangkul lebih erat"
+        ]
+      },
+      {
+        q: "7. Jenis minuman apa yang paling sering kamu pesan saat nongkrong di kafe?",
+        opts: [
+          "Kopi hitam pahit tanpa gula",
+          "Es teh manis atau air mineral",
+          "Matcha latte, strawberry milk, atau minuman manis lainnya",
+          "Cokelat panas dengan tambahan marshmallow"
+        ]
+      },
+      {
+        q: "8. Jika ada orang memujimu dengan kata 'Manis' atau 'Imut', bagaimana perasaanmu?",
+        opts: [
+          "Tersinggung, karena cowok harusnya dibilang ganteng/keren",
+          "Bingung harus bereaksi seperti apa",
+          "Agak salting (salah tingkah) tapi senang",
+          "Terima kasih sambil tersenyum tipis"
+        ]
+      },
+      {
+        q: "9. Seberapa sering kamu memperhatikan penampilan kulit wajah atau gaya rambutmu di depan cermin?",
+        opts: [
+          "Jarang banget, cuma pas mau keluar rumah",
+          "Cukup sering untuk memastikan tetap rapi",
+          "Setiap hari dan rutin pakai skincare dasar",
+          "Sangat detail, tidak boleh ada yang berantakan sedikitpun"
+        ]
+      },
+      {
+        q: "10. Dalam sebuah kelompok pertemanan, peran apa yang paling sering kamu ambil?",
+        opts: [
+          "Pemimpin yang tegas dan ambil keputusan",
+          "Pendengar yang baik dan suka menenangkan suasana",
+          "Si paling ceria yang suka manja ke teman dekat",
+          "Pengamat diam yang jarang ikut campur"
+        ]
+      },
+      {
+        q: "11. Apa pendapatmu tentang cowok yang memakai hoodie kebesaran (oversized) dengan lengan menutupi tangan?",
+        opts: [
+          "Terlihat aneh dan tidak praktis",
+          "Biasa saja, tren fashion zaman sekarang",
+          "Terlihat nyaman dan enak dilihat",
+          "Entah kenapa terlihat menggemaskan"
+        ]
+      },
+      {
+        q: "12. Saat melihat foto selfie teman cowok di media sosial yang pencahayaannya bagus, apa tindakanmu?",
+        opts: [
+          "Langsung scroll lewat tanpa like",
+          "Kasih like sebagai bentuk solidaritas teman",
+          "Perhatikan wajahnya beberapa detik sebelum like",
+          "Komentar memuji ketampanannya"
+        ]
+      },
+      {
+        q: "13. Jika kamu harus memilih hewan peliharaan untuk menemani di kamar, mana yang kamu pilih?",
+        opts: [
+          "Anjing penjaga yang besar dan gagah",
+          "Kucing kecil berbulu lembut yang manja",
+          "Kelinci putih yang tenang",
+          "Reptil atau ikan hias"
+        ]
+      },
+      {
+        q: "14. Bagaimana reaksimu saat mendengar suara cowok yang lembut dan pelan saat berbicara?",
+        opts: [
+          "Merasa kesal karena kurang tegas",
+          "Tidak terlalu peduli",
+          "Merasa tenang dan enak didengar",
+          "Membuatmu ingin mendengarkannya lebih dekat"
+        ]
+      },
+      {
+        q: "15. Pertanyaan terakhir: Seberapa jujur kamu menjawab ke-14 pertanyaan sebelumnya?",
+        opts: [
+          "100% jujur tanpa ditutup-tutupi",
+          "Jujur, tapi agak ragu di beberapa nomor",
+          "Mencoba memilih jawaban yang terlihat paling 'normal'",
+          "Asal klik saja biar cepat selesai"
+        ]
+      }
+    ];
+
+    let currentIdx = 0;
+    let userName = "Kamu";
+    // Variabel jebakan tetap mencatat interaksi agar terlihat dinamis, tapi hasilnya tetap dimanipulasi
+    let biasShift = 0;
+
+    function startQuiz() {
+      const input = document.getElementById("username").value.trim();
+      userName = input ? input : "Subjek #01";
+      currentIdx = 0;
+      biasShift = 0;
+
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const qObj = questions[currentIdx];
+      document.getElementById("q-counter").innerText = `Pertanyaan ${currentIdx + 1} dari ${questions.length}`;
+      const percent = Math.round((currentIdx / questions.length) * 100);
+      document.getElementById("q-percent").innerText = `${percent}%`;
+      document.getElementById("progress-fill").style.width = `${percent}%`;
+
+      document.getElementById("question-text").innerText = qObj.q;
+
+      const optionsBox = document.getElementById("options-container");
+      optionsBox.innerHTML = "";
+
+      qObj.opts.forEach((optText, index) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerText = optText;
+        btn.onclick = () => selectAnswer(index);
+        optionsBox.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(optionIndex) {
+      // Apapun yang dipilih hanya menggeser rasio antara Gay vs Femboy, Normal tetap ditekan habis
+      biasShift += (optionIndex + 1);
+      currentIdx++;
+
+      if (currentIdx < questions.length) {
+        renderQuestion();
+      } else {
+        showLoading();
+      }
+    }
+
+    function showLoading() {
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("loading-screen").classList.remove("hidden");
+
+      const messages = [
+        "Mengkalibrasi metrik psikologis bawah sadar...",
+        "Mendeteksi pola mikro-ekspresi dari pilihan jawaban...",
+        "Membandingkan dengan 50.000 database responden...",
+        "Menghitung persentase akhir..."
+      ];
+
+      let step = 0;
+      const interval = setInterval(() => {
+        step++;
+        if (step < messages.length) {
+          document.getElementById("loading-status").innerText = messages[step];
+        } else {
+          clearInterval(interval);
+          calculateRiggedResult();
+        }
+      }, 750);
+    }
+
+    function calculateRiggedResult() {
+      document.getElementById("loading-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.remove("hidden");
+      document.getElementById("res-name").innerText = userName;
+
+      // LOGIKA JEBAKAN:
+      // Normal dikunci di angka super kecil (1% - 4%)
+      const normalPct = (biasShift % 4) + 1; 
+      const remaining = 100 - normalPct;
+
+      // Sisa 96%-99% dibagi antara Gay dan Femboy agar salah satunya selalu dominan
+      let gayPct, femboyPct;
+      if (biasShift % 2 === 0) {
+        // Dominan Femboy
+        femboyPct = Math.floor(remaining * 0.58) + (biasShift % 9);
+        if (femboyPct >= remaining - 15) femboyPct = remaining - 18;
+        gayPct = remaining - femboyPct;
+      } else {
+        // Dominan Gay
+        gayPct = Math.floor(remaining * 0.58) + (biasShift % 9);
+        if (gayPct >= remaining - 15) gayPct = remaining - 18;
+        femboyPct = remaining - gayPct;
+      }
+
+      // Tentukan headline berdasarkan mana yang paling tinggi
+      const headlineEl = document.getElementById("res-headline");
+      const descEl = document.getElementById("res-desc");
+
+      if (femboyPct > gayPct) {
+        headlineEl.innerText = `Dominan: Pencinta Femboy (${femboyPct}%)`;
+        descEl.innerHTML = `
+          <strong>Analisis Sistem:</strong> Berdasarkan pola jawaban dari 15 pertanyaan, <strong>${userName}</strong> memiliki ketertarikan bawah sadar yang sangat kuat terhadap estetika <strong>Femboy (${femboyPct}%)</strong> dan kecenderungan <strong>Gay (${gayPct}%)</strong>. 
+          <br><br>
+          Upaya kamu untuk memilih jawaban yang terlihat "aman" atau "normal" (${normalPct}%) justru terdeteksi oleh algoritma sebagai bentuk penyangkalan (<em>denial phase</em>).
+        `;
+      } else {
+        headlineEl.innerText = `Dominan: Kecenderungan Gay (${gayPct}%)`;
+        descEl.innerHTML = `
+          <strong>Analisis Sistem:</strong> Berdasarkan pola jawaban dari 15 pertanyaan, <strong>${userName}</strong> menunjukkan indeks ketertarikan sesama jenis (<strong>Gay</strong>) sebesar <strong>${gayPct}%</strong> dengan ketertarikan sekunder pada <strong>Femboy (${femboyPct}%)</strong>.
+          <br><br>
+          Tingkat kenormalan kamu hanya tersisa <strong>${normalPct}%</strong>. Algoritma menyimpulkan kamu sudah tidak bisa mengelak lagi dari fakta ini.
+        `;
+      }
+
+      // Animasi bar persentase
+      setTimeout(() => {
+        document.getElementById("pct-gay").innerText = `${gayPct}%`;
+        document.getElementById("bar-gay").style.width = `${gayPct}%`;
+
+        document.getElementById("pct-femboy").innerText = `${femboyPct}%`;
+        document.getElementById("bar-femboy").style.width = `${femboyPct}%`;
+
+        document.getElementById("pct-normal").innerText = `${normalPct}%`;
+        document.getElementById("bar-normal").style.width = `${normalPct}%`;
+      }, 150);
+
+      // Simpan teks untuk fitur salin
+      window.latestResultText = `Hasil Tes Psikologi (${userName}):\n- Gay: ${gayPct}%\n- Femboy: ${femboyPct}%\n- Normal: ${normalPct}%\n\nTernyata selama ini cuma denial! 😂`;
+    }
+
+    function copyResult() {
+      if (navigator.clipboard && window.latestResultText) {
+        navigator.clipboard.writeText(window.latestResultText).then(() => {
+          alert("Hasil tes berhasil disalin! Tinggal paste ke grup chat.");
+        });
+      }
+    }
+
+    function resetQuiz() {
+      document.getElementById("bar-gay").style.width = "0%";
+      document.getElementById("bar-femboy").style.width = "0%";
+      document.getElementById("bar-normal").style.width = "0%";
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
