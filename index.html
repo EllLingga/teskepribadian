@@ -71,8 +71,8 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-ap
 import{getDatabase,ref,set,get,update,onValue,onDisconnect}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import{getAuth,signInAnonymously}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 const app=initializeApp({apiKey:"AIzaSyB-AYAJbb3kuwveK6xe42nm5j5e45H41Cc",authDomain:"casinogame-45148.firebaseapp.com",databaseURL:"https://casinogame-45148-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"casinogame-45148",storageBucket:"casinogame-45148.firebasestorage.app",messagingSenderId:"957225764064",appId:"1:957225764064:web:3b775930b25ff5030ffc85"});
-const db=getDatabase(app);let UID=null;
-const authP=signInAnonymously(getAuth(app)).then(c=>UID=c.user.uid).catch(()=>null);
+const db=getDatabase(app);let UID=null,AERR="";
+const authP=signInAnonymously(getAuth(app)).then(c=>UID=c.user.uid).catch(e=>{AERR=e.code||e.message;return null});
 const $=id=>document.getElementById(id),later=(f,ms)=>setTimeout(f,ms),esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const show=id=>{document.querySelectorAll(".sc").forEach(s=>s.classList.remove("on"));$(id).classList.add("on")};
@@ -91,12 +91,12 @@ document.querySelectorAll(".gm").forEach(c=>c.onclick=()=>{const g=c.dataset.g;
  <div class="row"><button class="b" data-a="mk">BUAT MEJA</button><button class="b" style="background:linear-gradient(#5cc2ff,#1479d6);color:#04203a" data-a="jn">GABUNG</button><button class="b r" data-a="x">BATAL</button></div>`,
  {x:hide,mk:()=>go(g,0),jn:()=>go(g,1)})});
 async function go(g,join){const name=$("nm").value.trim(),code=$("cd").value.trim().toUpperCase();if(!name)return note("Isi nickname dulu");localStorage.apx_name=name;
- await authP;if(!UID)return note("Login anonim gagal — aktifkan Anonymous di Firebase Auth");S.g=g;hide();
+ await authP;if(!UID)return note("Login gagal: "+AERR);S.g=g;hide();
  try{if(!join){const ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let i=0;i<6;i++)c+=ch[Math.random()*32|0];S.code=c;
    await update(ref(db,`${g}_rooms/${c}`),{meta:{code:c,hostId:UID,status:"lobby",game:g},["players/"+UID]:{name,joinedAt:Date.now()}})}
   else{if(code.length!==6)return note("Kode harus 6 karakter");S.code=code;const m=await get(R("meta"));if(!m.exists())return note("Meja tidak ditemukan");
    const ps=(await get(R("players"))).val()||{};if(!ps[UID]){if(m.val().status!=="lobby")return note("Pertandingan sedang berlangsung");if(Object.keys(ps).length>=4)return note("Meja penuh");await set(R("players/"+UID),{name,joinedAt:Date.now()})}}
-  listen()}catch(e){note("Gagal: cek rules Firebase");S.code=null}}
+  listen()}catch(e){note("Gagal: "+(e.code||e.message));S.code=null}}
 function listen(){S.un.forEach(f=>f());S.un=[];S.meta=null;S.players={};S.actL=0;sq=-1;GS=null;pub=null;hand=[];G=null;
  const L=(p,f)=>S.un.push(onValue(R(p),s=>f(s.val())));onDisconnect(R("players/"+UID)).remove();
  L("meta",m=>{if(!m){if(S.code){leaveLocal();note("Meja ditutup")}return}S.meta=m;S.host=m.hostId===UID;
